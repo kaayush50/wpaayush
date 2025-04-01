@@ -1,0 +1,134 @@
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@400;700&family=Lobster&family=Monoton&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display+SC:ital,wght@0,400;0,700;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,700&family=Work+Sans:ital,wght@0,400;0,700;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700");
+@import url("https://fonts.cdnfonts.com/css/segoe-script");
+
+/* Universal Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+    position: relative;
+    color: #333;
+    font-family: sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    width: 100vw;
+    min-height: 100vh;
+    text-align: center;
+    background-color: #f8f9fa;
+}
+
+/* Container for Profile */
+.container {
+    width: 50%;
+    margin: 50px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+h2 {
+    font-family: sans-serif;
+    font-size: 28px;
+    color: #444;
+    margin-bottom: 15px;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+label {
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+textarea {
+    resize: vertical;
+    height: 100px;
+}
+
+/* Profile Picture Styling */
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 15px auto;
+    display: block;
+    border: 3px solid #007bff;
+}
+
+/* Buttons */
+button, .view-btn, .edit-btn {
+    background: #007bff;
+    color: white;
+    padding: 12px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+button:hover, .view-btn:hover, .edit-btn:hover {
+    background: #0056b3;
+}
+
+/* Decorative Line */
+hr {
+    margin: 15px 0;
+    height: 4px;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border: none;
+    border-radius: 5px;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+    .container {
+        width: 80%;
+    }
+    body {
+        font-size: 16px;
+    }
+    h2 {
+        font-size: 22px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container {
+        width: 90%;
+    }
+    body {
+        font-size: 14px;
+    }
+    h2 {
+        font-size: 18px;
+    }
+}

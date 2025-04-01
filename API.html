@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Questions</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Style for the page */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #4a90e2;
+            text-align: center;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-container select {
+            padding: 10px;
+            font-size: 1.2em;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        #start-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #start-button:hover {
+            background-color: #45a049;
+        }
+
+        #start-button:active {
+            background-color: #388e3c;
+        }
+
+        #trivia-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.6em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: #45a049;
+        }
+
+        .option:active {
+            background-color: #388e3c;
+        }
+
+        #next-question {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #next-question:hover {
+            background-color: #e67e22;
+        }
+
+        #next-question:active {
+            background-color: #d35400;
+        }
+
+        #score-container {
+            margin-top: 30px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 300px;
+            margin-top: 30px;
+        }
+
+        canvas {
+            width: 300px;
+            height: 300px;
+        }
+
+        #watch-video-container {
+            margin: 20px 0;
+        }
+
+        #watch-video-button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #watch-video-button:hover {
+            background-color: #c0392b;
+        }
+
+        #watch-video-button:active {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Trivia Questions</h1>
+    <div id="settings-container" class="form-container">
+        <h2>Choose your preferences</h2>
+        <select id="category">
+            <option value="9">General Knowledge</option>
+            <option value="17">Science: Computers</option>
+            <option value="21">Sports</option>
+            <option value="18">Science: Gadgets</option>
+            <option value="22">Geography</option>
+        </select>
+        <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+        <select id="question-type">
+            <option value="multiple">Multiple Choice</option>
+            <option value="boolean">True/False</option>
+        </select>
+        <select id="num-questions">
+            <option value="5">5 Questions</option>
+            <option value="10">10 Questions</option>
+            <option value="15">15 Questions</option>
+            <option value="20">20 Questions</option>
+        </select>
+        <button id="start-button">Start Quiz</button>
+    </div>
+
+    <!-- Display the Watch Video button only during the setup phase -->
+    <div id="watch-video-container">
+        <button id="watch-video-button">Watch Video on YouTube</button>
+    </div>
+
+    <div id="trivia-container"></div>
+
+    <button id="next-question" style="display:none;">Next Question</button>
+
+    <div id="score-container">
+        <p>Correct: <span id="correct-score">0</span> | Incorrect: <span id="incorrect-score">0</span></p>
+    </div>
+
+    <div id="chart-container" class="chart-container" style="display: none;">
+        <canvas id="pie-chart"></canvas>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        let triviaData = [];
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let numQuestions = 10;
+        let currentCategory = '';
+
+        // Function to fetch trivia questions based on user selection
+        function fetchTrivia(category, difficulty, questionType, numQuestions) {
+            const apiUrl = `https://opentdb.com/api.php?amount=${numQuestions}&category=${category}&difficulty=${difficulty}&type=${questionType}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.response_code === 0) {
+                        triviaData = data.results;
+                        currentCategory = category;
+                        displayQuestion(currentQuestionIndex);
+                        document.getElementById("next-question").style.display = "block"; // Show next question button
+                    } else {
+                        alert('Sorry, something went wrong. Please try again later.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching trivia data:', error);
+                    alert('There was an error fetching the trivia data. Please check your connection.');
+                });
+        }
+
+        // Function to display a question along with its answer options
+        function displayQuestion(index) {
+            const triviaContainer = document.getElementById('trivia-container');
+           
+            if (index < triviaData.length) {
+                const question = triviaData[index];
+                const questionText = question.question;
+                const correctAnswer = question.correct_answer;
+                const incorrectAnswersList = question.incorrect_answers;
+
+                const allAnswers = [...incorrectAnswersList, correctAnswer];
+                const shuffledAnswers = allAnswers.sort(() => Math.random() - 0.5);
+
+                let optionsHtml = '';
+                shuffledAnswers.forEach(answer => {
+                    optionsHtml += `<button class="option">${answer}</button>`;
+                });
+
+                triviaContainer.innerHTML = `    
+                    <h3>${questionText}</h3>
+                    <div class="options-container">
+                        ${optionsHtml}
+                    </div>
+                `;
+
+                const optionButtons = document.querySelectorAll('.option');
+                optionButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        if (button.textContent === correctAnswer) {
+                            correctAnswers++;
+                        } else {
+                            incorrectAnswers++;
+                        }
+                        updateScore();
+                        disableOptions();
+                    });
+                });
+            } else {
+                showPieChart();
+            }
+        }
+
+        // Function to update the score
+        function updateScore() {
+            document.getElementById('correct-score').textContent = correctAnswers;
+            document.getElementById('incorrect-score').textContent = incorrectAnswers;
+        }
+
+        // Function to disable options after a choice is made
+        function disableOptions() {
+            const optionButtons = document.querySelectorAll('.option');
+            optionButtons.forEach(button => {
+                button.disabled = true;
+            });
+        }
+
+        // Show pie chart with final result
+        function showPieChart() {
+            document.getElementById('trivia-container').style.display = 'none';
+            document.getElementById('next-question').style.display = 'none';
+            document.getElementById('score-container').style.display = 'none';
+            document.getElementById('chart-container').style.display = 'block';
+
+            const ctx = document.getElementById('pie-chart').getContext('2d');
+            const pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Correct', 'Incorrect'],
+                    datasets: [{
+                        data: [correctAnswers, incorrectAnswers],
+                        backgroundColor: ['#4CAF50', '#e74c3c'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw + ' questions';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Set up event listener for the Start Quiz button
+        document.getElementById('start-button').addEventListener('click', () => {
+            const category = document.getElementById('category').value;
+            const difficulty = document.getElementById('difficulty').value;
+            const questionType = document.getElementById('question-type').value;
+            numQuestions = document.getElementById('num-questions').value;
+
+            // Hide the settings container and start the quiz
+            document.getElementById('settings-container').style.display = 'none';
+
+            // Hide the Watch Video button after starting the quiz
+            document.getElementById('watch-video-container').style.display = 'none';
+
+            fetchTrivia(category, difficulty, questionType, numQuestions);
+        });
+
+        // Set up event listener for the Watch Video button to redirect to YouTube
+        document.getElementById('watch-video-button').addEventListener('click', () => {
+            const categoryName = getCategoryName(document.getElementById('category').value);
+            const videoUrl = `https://www.youtube.com/results?search_query=${categoryName}+trivia+quiz`;
+            window.location.href = videoUrl; // Redirect to YouTube
+        });
+
+        // Function to convert category ID to category name for YouTube search
+        function getCategoryName(categoryId) {
+            const categoryNames = {
+                9: 'General Knowledge',
+                17: 'Science Computers',
+                21: 'Sports',
+                18: 'Science Gadgets',
+                22: 'Geography'
+            };
+            return categoryNames[categoryId] || 'Trivia';
+        }
+
+        // Set up event listener for the Next Question button
+        document.getElementById('next-question').addEventListener('click', () => {
+            if (currentQuestionIndex < triviaData.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
+            } else {
+                showPieChart();
+            }
+        });
+    </script>
+</body>
+</html>

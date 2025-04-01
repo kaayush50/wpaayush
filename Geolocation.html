@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leaflet - Show Bookstores Near Me</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        /* Ensure the map container takes up the full screen */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<script>
+// Initializing map
+var map = L.map('map').setView([18.9902, 73.1277], 12); // Default view (change coordinates to your desired initial view)
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// Function to get user's location and display nearby bookstores
+function getUserLocationAndShowBookstores() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            map.setView([lat, lon], 15); // Zoom in on the user's location
+
+            // Add a marker for the user's current location
+            var userMarker = L.marker([lat, lon]).addTo(map);
+            userMarker.bindPopup("<b>Your Location</b><br>Lat: " + lat + ", Lon: " + lon).openPopup();
+
+            // Now, search for bookstores nearby using Nominatim API
+            var searchUrl = `https://nominatim.openstreetmap.org/search?q=bookstore&format=json&lat=${lat}&lon=${lon}&radius=5000&addressdetails=1&limit=10`;
+
+            fetch(searchUrl)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(place => {
+                        // Display each bookstore as a marker on the map
+                        var bookstoreLat = place.lat;
+                        var bookstoreLon = place.lon;
+                        var bookstoreName = place.display_name;
+
+                        var bookstoreMarker = L.marker([bookstoreLat, bookstoreLon]).addTo(map);
+                        bookstoreMarker.bindPopup("<b>Bookstore</b><br>" + bookstoreName);
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching bookstores:", error);
+                });
+        }, function(error) {
+            alert("Error getting location: " + error.message);
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+// Call the function to get user location and show bookstores
+getUserLocationAndShowBookstores();
+
+</script>
+
+</body>
+
+</html>
